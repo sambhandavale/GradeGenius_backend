@@ -175,7 +175,7 @@ export const listSubmissions = catchAsync(
     }
 
     const assignment = await AssignmentModel.findById(assignmentId)
-      .populate("submissions.student", "name email")
+      .populate("submissions.student", "name email username")
       .select("title submissions");
 
     if (!assignment) {

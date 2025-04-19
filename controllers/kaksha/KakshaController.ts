@@ -78,7 +78,7 @@ export const joinKaksha = catchAsync(
         await kaksha.save();
 
         await Users.findByIdAndUpdate(userId, {
-            $push: { teams: kaksha._id },
+            $push: { kakshas: kaksha._id },
         });
 
         return res.status(200).json({ message: "Successfully joined Kaksha", kaksha });
@@ -156,14 +156,14 @@ export const deleteKaksha = catchAsync(
   );
   
 
-    async function deleteFileFromGridFS(fileId) {
-    try {
-        const _fileId = new mongoose.Types.ObjectId(fileId);
-        await gfs.delete(_fileId);
-        console.log(`File with ID ${fileId} deleted successfully from GridFS.`);
-    } catch (error) {
-        console.error(`Error deleting file with ID ${fileId} from GridFS:`, error);
-        throw new Error('Error deleting file from GridFS');
-    }
-    }
+async function deleteFileFromGridFS(fileId) {
+  try {
+      const _fileId = new mongoose.Types.ObjectId(fileId);
+      await gfs.delete(_fileId);
+      console.log(`File with ID ${fileId} deleted successfully from GridFS.`);
+  } catch (error) {
+      console.error(`Error deleting file with ID ${fileId} from GridFS:`, error);
+      throw new Error('Error deleting file from GridFS');
+  }
+}
 
