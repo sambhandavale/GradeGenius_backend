@@ -56,6 +56,7 @@ export const createAssignment = catchAsync(
     });
 
     await assignment.save();
+    console.log(`New Assignment added by ${req.user.username}`);
 
     kakshaDoc.posts.push({
       title: title,
@@ -161,6 +162,7 @@ export const submitAssignment = catchAsync(
     });
 
     await assignment.save();
+    console.log(`Assignment Submitted by ${req.user.username}`);
 
     return res.status(201).json({ message: "Assignment submitted successfully" });
   }

@@ -65,7 +65,7 @@ export const signin = (req: Request, res: Response) => {
             error: "Email and password do not match",
           });
         }
-        console.log(user);
+        console.log(`${user.username} Logged In`);
         const jwtToken = sign({ _id: user._id }, process.env.JWT_SECRET ?? "", {
           expiresIn: "7h",
         });
