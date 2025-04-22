@@ -143,6 +143,7 @@ export const submitAssignment = catchAsync(
     }
 
     const files = req.files as GridFSFile[] | undefined;
+    console.log('Incoming files:', req.files);
     if (!files || files.length === 0) {
       return res.status(400).json({ message: "No file uploaded" });
     }
