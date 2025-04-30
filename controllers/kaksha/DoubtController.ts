@@ -70,40 +70,44 @@ export const plusOneDoubt = catchAsync(
   
   
 
-export const answerDoubt = catchAsync(
-  async (req: IBaseRequest, res: Response, next: NextFunction) => {
-    const { kakshaId, doubtId, answer } = req.body;
-    const userId = req.user._id;
-
-    if (!kakshaId || !doubtId || !answer) {
-      return res.status(400).json({ message: "Kaksha ID, doubt ID, and answer are required." });
+  export const answerDoubt = catchAsync(
+    async (req: IBaseRequest, res: Response, next: NextFunction) => {
+      const { kakshaId, doubtId, answer } = req.body;
+      const userId = req.user._id;
+  
+      if (!kakshaId || !doubtId || !answer) {
+        return res.status(400).json({ message: "Kaksha ID, doubt ID, and answer are required." });
+      }
+  
+      const kaksha = await KakshaModel.findById(kakshaId);
+      if (!kaksha) {
+        return res.status(404).json({ message: "Kaksha not found." });
+      }
+  
+      const doubt = kaksha.doubts?.find((d) => d._id.toString() === doubtId);
+      if (!doubt) {
+        return res.status(404).json({ message: "Doubt not found." });
+      }
+  
+      if (req.user.role !== 'teacher' && req.user.role !== 'admin') {
+        return res.status(403).json({ message: "Only teachers or admins can answer or update doubts." });
+      }
+  
+      const isFirstAnswer = !doubt.answer;
+  
+      doubt.answer = answer;
+      doubt.answeredBy = userId;
+  
+      await kaksha.save();
+  
+      return res.status(200).json({
+        message: isFirstAnswer
+          ? "Doubt answered successfully."
+          : "Doubt answer updated successfully.",
+      });
     }
-
-    const kaksha = await KakshaModel.findById(kakshaId);
-    if (!kaksha) {
-      return res.status(404).json({ message: "Kaksha not found." });
-    }
-
-    const doubt = kaksha.doubts?.find((d) => d._id.toString() === doubtId);
-    if (!doubt) {
-      return res.status(404).json({ message: "Doubt not found." });
-    }
-
-    if (req.user.role !== 'teacher' && req.user.role !== 'admin') {
-      return res.status(403).json({ message: "Only teachers or admins can answer doubts." });
-    }
-
-    if (doubt.answer) {
-        return res.status(409).json({ message: "This doubt has already been answered." });
-    }
-
-    doubt.answer = answer;
-    doubt.answeredBy = userId;
-
-    await kaksha.save();
-    return res.status(200).json({ message: "Doubt answered successfully." });
-  }
-);
+  );
+  
 
 export const listDoubts = catchAsync(
   async (req: IBaseRequest, res: Response, next: NextFunction) => {
