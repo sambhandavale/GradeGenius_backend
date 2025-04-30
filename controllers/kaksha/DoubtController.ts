@@ -114,8 +114,8 @@ export const listDoubts = catchAsync(
     }
 
     const kaksha = await KakshaModel.findById(kakshaId)
-      .populate("doubts.askedBy", "name email role")
-      .populate("doubts.answeredBy", "name email role")
+      .populate("doubts.askedBy", "name email role username")
+      .populate("doubts.answeredBy", "name email role username")
       // .populate("doubts.plusOneBy", "name email role");
 
     if (!kaksha) {
